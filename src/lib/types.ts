@@ -196,6 +196,6 @@ export interface FormAnalysis {
   good_points: string[];
   issues: string[];
   cues: string[];
-  overall_assessment: string;
+  overall_assessment: string | null;
   created_at: string;
 }
