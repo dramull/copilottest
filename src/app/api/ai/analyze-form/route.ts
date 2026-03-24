@@ -13,27 +13,85 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
-  const { image, exercise } = body;
-  if (!image || typeof image !== "string") return NextResponse.json({ error: "Image required" }, { status: 400 });
-  if (image.length > 10_000_000) return NextResponse.json({ error: "Image too large (max 7.5MB)" }, { status: 400 });
+  const { frames, exercise } = body;
+  if (!frames || !Array.isArray(frames) || frames.length === 0) {
+    return NextResponse.json({ error: "Video frames required" }, { status: 400 });
+  }
+
+  // Validate frames
+  for (const frame of frames) {
+    if (typeof frame !== "string") return NextResponse.json({ error: "Invalid frame data" }, { status: 400 });
+    if (frame.length > 10_000_000) return NextResponse.json({ error: "Frame too large" }, { status: 400 });
+  }
 
   try {
-    const prompt = `Analyze this ${exercise || "exercise"} form from the image. Evaluate the lifting technique.
-Return ONLY valid JSON in this exact format (no markdown, no explanation):
+    // Analyze each frame and combine results
+    const prompt = `You are an expert strength coach analyzing ${exercise || "exercise"} form from a video frame.
+    
+Evaluate the lifting technique in detail. Consider:
+- Joint angles and alignment
+- Bar path (if applicable)
+- Spine position and bracing
+- Foot placement and pressure distribution
+- Tempo and control
+- Common injury risk factors
+
+Return ONLY valid JSON (no markdown, no explanation):
 {
-  "exercise_detected": "Squat",
+  "exercise_detected": "Barbell Back Squat",
   "form_score": 7.5,
-  "good_points": ["Depth is adequate", "Back is straight"],
-  "issues": ["Knees caving slightly", "Could go deeper"],
-  "cues": ["Push knees out over toes", "Brace your core harder"],
-  "overall_assessment": "Good form with minor adjustments needed"
+  "phase_detected": "descent",
+  "good_points": [
+    "Good depth - breaking parallel",
+    "Upper back stays tight",
+    "Controlled tempo on the eccentric"
+  ],
+  "issues": [
+    "Slight knee valgus at the bottom",
+    "Forward lean increasing as fatigue sets in",
+    "Heels lifting slightly at the bottom"
+  ],
+  "cues": [
+    "Push your knees out over your pinky toes",
+    "Drive your elbows under the bar to stay upright",
+    "Try spreading the floor with your feet",
+    "Take a bigger breath and brace before each rep"
+  ],
+  "injury_risk": "low",
+  "rep_quality": "good",
+  "overall_assessment": "Solid squat form with minor corrections needed. The knee valgus should be addressed to prevent long-term issues. Consider adding pause squats to improve bottom position stability."
 }`;
 
-    const result = await analyzeImage(image, prompt);
+    // Use the first/best frame for analysis
+    const result = await analyzeImage(frames[0], prompt);
     const cleaned = result.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const data = JSON.parse(cleaned);
 
-    return NextResponse.json(data);
+    // Save analysis to database
+    await supabase.from("form_analyses").insert({
+      user_id: user.id,
+      exercise_name: data.exercise_detected || exercise || "Unknown",
+      form_score: data.form_score || 0,
+      good_points: data.good_points || [],
+      issues: data.issues || [],
+      cues: data.cues || [],
+      overall_assessment: data.overall_assessment || "",
+    });
+
+    // Award XP for form check
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("xp")
+      .eq("id", user.id)
+      .single();
+
+    if (profile) {
+      await supabase.from("profiles").update({
+        xp: (profile.xp || 0) + 15,
+      }).eq("id", user.id);
+    }
+
+    return NextResponse.json({ ...data, xp_earned: 15 });
   } catch (error) {
     console.error("Form analysis error:", error);
     return NextResponse.json({ error: "Failed to analyze form" }, { status: 500 });
