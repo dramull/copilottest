@@ -32,6 +32,10 @@ export async function PATCH(request: Request) {
   }
   const { id, status, workout_id } = body;
   if (!id) return NextResponse.json({ error: "Schedule ID required" }, { status: 400 });
+  const validStatuses = ["pending", "completed", "skipped", "partial"];
+  if (status && !validStatuses.includes(status)) {
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
 
   const { data: updated } = await supabase
     .from("scheduled_workouts")

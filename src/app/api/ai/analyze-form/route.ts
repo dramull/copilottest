@@ -18,6 +18,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Video frames required" }, { status: 400 });
   }
 
+  // Sanitize exercise name - only allow alphanumeric, spaces, and hyphens
+  const sanitizedExercise = exercise
+    ? String(exercise).replace(/[^a-zA-Z0-9 \-_]/g, "").slice(0, 50)
+    : "exercise";
+
   // Validate frames
   for (const frame of frames) {
     if (typeof frame !== "string") return NextResponse.json({ error: "Invalid frame data" }, { status: 400 });
@@ -26,7 +31,7 @@ export async function POST(request: Request) {
 
   try {
     // Analyze each frame and combine results
-    const prompt = `You are an expert strength coach analyzing ${exercise || "exercise"} form from a video frame.
+    const prompt = `You are an expert strength coach analyzing ${sanitizedExercise} form from a video frame.
     
 Evaluate the lifting technique in detail. Consider:
 - Joint angles and alignment
@@ -70,7 +75,7 @@ Return ONLY valid JSON (no markdown, no explanation):
     // Save analysis to database
     await supabase.from("form_analyses").insert({
       user_id: user.id,
-      exercise_name: data.exercise_detected || exercise || "Unknown",
+      exercise_name: data.exercise_detected || sanitizedExercise || "Unknown",
       form_score: data.form_score || 0,
       good_points: data.good_points || [],
       issues: data.issues || [],
