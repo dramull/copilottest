@@ -5,8 +5,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/client";
-import { Apple, ArrowRight, Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Apple, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface DietPlan {
@@ -26,13 +25,12 @@ interface DietPlan {
 const dietTypes = ["Flexible", "Keto", "Vegan", "Mediterranean", "Carnivore", "Paleo", "IIFYM"];
 
 export default function DietPage() {
-  const [plans, setPlans] = useState<DietPlan[]>([]);
+  const [, setPlans] = useState<DietPlan[]>([]);
   const [showGenerator, setShowGenerator] = useState(false);
   const [activePlan, setActivePlan] = useState<DietPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   // Generator fields
   const [dietType, setDietType] = useState("Flexible");
@@ -40,7 +38,7 @@ export default function DietPage() {
   const [protein, setProtein] = useState("150");
   const [carbs, setCarbs] = useState("200");
   const [fat, setFat] = useState("70");
-  const [mealsPerDay, setMealsPerDay] = useState("3");
+  const [mealsPerDay] = useState("3");
 
   useEffect(() => {
     async function loadPlans() {

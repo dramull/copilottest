@@ -7,8 +7,15 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { image } = await request.json();
-  if (!image) return NextResponse.json({ error: "Image required" }, { status: 400 });
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { image } = body;
+  if (!image || typeof image !== "string") return NextResponse.json({ error: "Image required" }, { status: 400 });
+  if (image.length > 10_000_000) return NextResponse.json({ error: "Image too large (max 7.5MB)" }, { status: 400 });
 
   try {
     const prompt = `Analyze this meal photo. Identify all foods visible and estimate nutritional content.

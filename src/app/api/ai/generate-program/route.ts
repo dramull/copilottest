@@ -7,7 +7,13 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { philosophy, days_per_week, weeks, goal, experience } = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { philosophy, days_per_week, weeks, goal, experience } = body;
 
   try {
     const prompt = `Create a ${weeks || 4}-week workout program.

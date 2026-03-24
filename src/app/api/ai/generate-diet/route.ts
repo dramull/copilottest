@@ -7,7 +7,13 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { diet_type, calorie_target, protein_g, carbs_g, fat_g, meals_per_day, preferences } = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { diet_type, calorie_target, protein_g, carbs_g, fat_g, meals_per_day, preferences } = body;
 
   try {
     const prompt = `Create a 7-day meal plan.

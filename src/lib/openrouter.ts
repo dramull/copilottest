@@ -17,7 +17,7 @@ export async function chatCompletion(messages: Message[], model = "google/gemini
 
   if (!res.ok) {
     const error = await res.text();
-    throw new Error(`OpenRouter API error: ${res.status} ${error}`);
+    throw new Error(`OpenRouter API error: ${res.status}`);
   }
 
   const data = await res.json();

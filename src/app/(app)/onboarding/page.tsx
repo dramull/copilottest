@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { createClient } from "@/lib/supabase/client";
-import { Activity, ArrowRight, Camera, Check, Sparkles } from "lucide-react";
+import { Activity, ArrowRight, Check, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
               onClick={handleSkipPhoto}
               className="block w-full text-center text-sm text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
             >
-              Skip — I'll fill in details manually
+              Skip — I&apos;ll fill in details manually
             </button>
           </div>
         )}
