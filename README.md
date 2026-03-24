@@ -7,7 +7,7 @@ A computer-vision-first fitness app that removes friction from every interaction
 | Layer            | Choice                                      |
 | ---------------- | ------------------------------------------- |
 | Frontend         | Next.js 15 (App Router) + Tailwind CSS v4   |
-| Auth             | Stack Auth                                  |
+| Auth             | Supabase Auth                                |
 | Database         | Supabase (Postgres + Storage + Realtime)    |
 | AI / Vision API  | OpenRouter (multi-model, vision-capable)     |
 | Hosting          | Vercel                                      |
@@ -72,12 +72,12 @@ pnpm dev
 
 ## Environment Variables
 
-| Variable                    | Description                        |
-| --------------------------- | ---------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`  | Supabase project URL               |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service-role secret       |
-| `OPENROUTER_API_KEY`        | OpenRouter API key                 |
-| `STACK_AUTH_SECRET`         | Stack Auth secret                  |
+| Variable                       | Description                        |
+| ------------------------------ | ---------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`     | Supabase project URL               |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`| Supabase anonymous/public key      |
+| `SUPABASE_SERVICE_ROLE_KEY`    | Supabase service-role secret       |
+| `OPENROUTER_API_KEY`           | OpenRouter API key                 |
 
 ## License
 
