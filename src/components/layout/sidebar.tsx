@@ -10,16 +10,18 @@ import {
   Settings2,
   TrendingUp,
   UtensilsCrossed,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/workouts/today", label: "Today", icon: CalendarDays },
   { href: "/meals", label: "Meals", icon: UtensilsCrossed },
   { href: "/workouts", label: "Workouts", icon: Dumbbell },
-  { href: "/programs", label: "Programs", icon: CalendarDays },
-  { href: "/diet", label: "Diet", icon: Apple },
+  { href: "/form-check", label: "Form Check", icon: Video },
+  { href: "/programs", label: "Programs", icon: Apple },
   { href: "/progress", label: "Progress", icon: TrendingUp },
   { href: "/settings", label: "Settings", icon: Settings2 },
 ];
