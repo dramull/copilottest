@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PhotoUpload } from "@/components/ui/photo-upload";
+import { MediaCapture } from "@/components/ui/media-capture";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -102,6 +102,13 @@ export default function NewMealPage() {
       fat_g: parseFloat(fat) || 0,
     });
 
+    // Update meal streak
+    await fetch("/api/streaks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ streak_type: "meal" }),
+    });
+
     router.push("/meals");
     router.refresh();
   }
@@ -120,11 +127,12 @@ export default function NewMealPage() {
         </div>
       </div>
 
-      <PhotoUpload
-        onUpload={handlePhotoUpload}
+      <MediaCapture
+        onCapture={handlePhotoUpload}
         preview={preview}
         onClear={() => { setPreview(null); setBase64(null); setAnalysis(null); }}
         label="Photo of your meal"
+        accept="photo"
       />
 
       {analyzing && (

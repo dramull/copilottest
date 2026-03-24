@@ -16,6 +16,11 @@ export interface UserProfile {
   fat_g: number | null;
   training_philosophy: string | null;
   onboarded: boolean;
+  estimated_weight_kg: number | null;
+  age_range_low: number | null;
+  age_range_high: number | null;
+  xp: number;
+  level: number;
   created_at: string;
 }
 
@@ -130,5 +135,67 @@ export interface ProgressEntry {
   body_fat_pct: number | null;
   notes: string | null;
   logged_at: string;
+  created_at: string;
+}
+
+export interface ScheduledWorkout {
+  id: string;
+  user_id: string;
+  program_id: string | null;
+  scheduled_date: string;
+  day_name: string;
+  exercises: ScheduledExercise[];
+  status: "pending" | "completed" | "skipped" | "partial";
+  workout_id: string | null;
+  created_at: string;
+}
+
+export interface ScheduledExercise {
+  name: string;
+  sets: number;
+  reps: string;
+  weight_kg: number | null;
+  rest_seconds: number;
+  notes?: string;
+}
+
+export interface UserStreak {
+  id: string;
+  user_id: string;
+  streak_type: "workout" | "meal" | "login";
+  current_streak: number;
+  longest_streak: number;
+  last_activity_date: string;
+  updated_at: string;
+}
+
+export interface Achievement {
+  id: string;
+  user_id: string;
+  achievement_type: string;
+  title: string;
+  description: string;
+  icon: string;
+  earned_at: string;
+}
+
+export interface WeeklyStats {
+  workouts_completed: number;
+  meals_logged: number;
+  total_calories: number;
+  total_protein: number;
+  avg_form_score: number | null;
+}
+
+export interface FormAnalysis {
+  id: string;
+  user_id: string;
+  video_url: string | null;
+  exercise_name: string;
+  form_score: number;
+  good_points: string[];
+  issues: string[];
+  cues: string[];
+  overall_assessment: string | null;
   created_at: string;
 }

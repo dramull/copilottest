@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { PhotoUpload } from "@/components/ui/photo-upload";
+import { MediaCapture } from "@/components/ui/media-capture";
 import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
@@ -109,11 +109,12 @@ export default function ProgressPage() {
             <CardTitle>New Progress Entry</CardTitle>
           </CardHeader>
           <div className="space-y-4">
-            <PhotoUpload
-              onUpload={(_file, b64) => { setBase64(b64); setPreview(`data:image/jpeg;base64,${b64}`); }}
+            <MediaCapture
+              onCapture={(_file, b64) => { setBase64(b64); setPreview(`data:image/jpeg;base64,${b64}`); }}
               preview={preview}
               onClear={() => { setPreview(null); setBase64(null); }}
               label="Progress photo"
+              accept="photo"
             />
             <div className="grid grid-cols-2 gap-3">
               <Input id="weight" label="Weight (kg)" type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} />
